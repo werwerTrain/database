@@ -3,7 +3,8 @@ pipeline {
 
     environment {
         // 设置 Docker 镜像的标签
-        DB_IMAGE = "luluplum/db:latest"
+        DB_IMAGE = "3181577132/db:latest"
+        KUBECONFIG = credentials('kubectl_id')
     }
 
     stages {
@@ -11,24 +12,24 @@ pipeline {
             steps {
                 script {
                     // 构建前端 Docker 镜像
-                    sh 'docker build -t ${DB_IMAGE} ./db'
+                    bat 'docker build -t ${DB_IMAGE} ./db'
                 }
             }
         }
 
-        stage('Push DB Image') {
-            steps {
-                script {
-                    // 推送前端 Docker 镜像到 Docker Registry
-                    sh 'docker push ${DB_IMAGE}'
-                }
-            }
-        }
+        // stage('Push DB Image') {
+        //     steps {
+        //         script {
+        //             // 推送前端 Docker 镜像到 Docker Registry
+        //             sh 'docker push ${DB_IMAGE}'
+        //         }
+        //     }
+        // }
         stage('Deploy to Kubernetes') {
             steps {
                 script {
                     // 应用 Kubernetes 配置
-                    sh 'kubectl apply -f k8s/db-deployment.yaml'
+                    bat 'kubectl apply -f k8s/db-deployment.yaml'
                 }
             }
         }
@@ -37,7 +38,7 @@ pipeline {
             steps {
                 script {
                     // 应用 Kubernetes 配置
-                    sh 'kubectl apply -f k8s/db-service.yaml'
+                    bat 'kubectl apply -f k8s/db-service.yaml'
                 }
             }
         }
@@ -47,7 +48,7 @@ pipeline {
     post {
         always {
             // 这里可以添加一些清理步骤，例如清理工作目录或通知
-            sh 'docker system prune -f'
+            bat 'docker system prune -f'
         }
         success {
             echo 'Build and deployment succeeded!'
