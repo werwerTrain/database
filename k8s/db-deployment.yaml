@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: db
-        image: luluplum/db:latest
+        image: 3181577132/db:latest
         ports:
         - containerPort: 3306
