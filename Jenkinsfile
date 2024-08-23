@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'luluplum', url: 'https://github.com/werwerTrain/backend.git'
+                git branch: 'luluplum', url: 'https://github.com/werwerTrain/database.git'
             }
         }
         stage('Build DB') {
