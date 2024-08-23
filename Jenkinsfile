@@ -8,11 +8,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                git branch: 'bxr', url: 'https://github.com/werwerTrain/database.git'
-            }
-        }
         
         stage('Build DB') {
             steps {
