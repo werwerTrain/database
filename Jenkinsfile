@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // 设置 Docker 镜像的标签
-        //DB_IMAGE = "luluplum/db:latest"
+        DB_IMAGE = "luluplum/db:latest"
     }
 
     stages {
