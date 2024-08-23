@@ -16,14 +16,6 @@ pipeline {
             }
         }
 
-        stage('Push DB Image') {
-            steps {
-                script {
-                    // 推送 Docker 镜像到 Docker Registry
-                    bat 'docker push luluplum/db:latest'
-                }
-            }
-        }
         stage('Deploy to Kubernetes') {
             steps {
                 script {
