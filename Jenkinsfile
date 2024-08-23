@@ -11,7 +11,7 @@ pipeline {
             steps {
                 script {
                     // 构建数据库 Docker 镜像
-                    bat 'docker build -t ${DB_IMAGE} ./db'
+                    bat 'docker build -t luluplum/db:latest ./db'
                 }
             }
         }
@@ -20,7 +20,7 @@ pipeline {
             steps {
                 script {
                     // 推送 Docker 镜像到 Docker Registry
-                    bat 'docker push ${DB_IMAGE}'
+                    bat 'docker push luluplum/db:latest'
                 }
             }
         }
