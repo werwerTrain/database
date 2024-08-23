@@ -18,7 +18,7 @@ pipeline {
             steps {
                 script {
                     // 构建前端 Docker 镜像
-                    sh 'docker build -t ${DB_IMAGE} ./db'
+                    bat 'docker build -t ${DB_IMAGE} ./db'
                 }
             }
         }
@@ -27,7 +27,7 @@ pipeline {
             steps {
                 script {
                     // 应用 Kubernetes 配置
-                    sh 'kubectl apply -f k8s/db-deployment.yaml'
+                    bat 'kubectl apply -f k8s/db-deployment.yaml'
                 }
             }
         }
@@ -36,7 +36,7 @@ pipeline {
             steps {
                 script {
                     // 应用 Kubernetes 配置
-                    sh 'kubectl apply -f k8s/db-service.yaml'
+                    bat 'kubectl apply -f k8s/db-service.yaml'
                 }
             }
         }
@@ -46,7 +46,7 @@ pipeline {
     post {
         always {
             // 这里可以添加一些清理步骤，例如清理工作目录或通知
-            sh 'docker system prune -f'
+            bat 'docker system prune -f'
         }
         success {
             echo 'Build and deployment succeeded!'
