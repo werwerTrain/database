@@ -7,8 +7,6 @@ pipeline {
     }
 
     stages {
-
-        
         stage('Build DB') {
             steps {
                 script {
@@ -50,7 +48,6 @@ pipeline {
     post {
         always {
             // 这里可以添加一些清理步骤，例如清理工作目录或通知
-            bat 'docker system prune -f'
             bat 'docker system prune -f'
         }
         success {
