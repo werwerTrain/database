@@ -14,7 +14,6 @@ pipeline {
                 script {
                     // 构建前端 Docker 镜像
                     bat 'docker build -t luluplum/db:latest ./db'
-                    bat 'docker build -t luluplum/db:latest ./db'
                 }
             }
         }
