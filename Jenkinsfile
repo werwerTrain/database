@@ -8,16 +8,12 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                git branch: 'bxr', url: 'https://github.com/werwerTrain/database.git'
-            }
-        }
         
         stage('Build DB') {
             steps {
                 script {
                     // 构建前端 Docker 镜像
+                    bat 'docker build -t luluplum/db:latest ./db'
                     bat 'docker build -t luluplum/db:latest ./db'
                 }
             }
@@ -55,6 +51,7 @@ pipeline {
     post {
         always {
             // 这里可以添加一些清理步骤，例如清理工作目录或通知
+            bat 'docker system prune -f'
             bat 'docker system prune -f'
         }
         success {
