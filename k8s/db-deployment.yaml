@@ -15,5 +15,14 @@ spec:
       containers:
       - name: db
         image: luluplum/db:latest
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+          value: "werwerTrip1234"
+          - name: MYSQL_DATABASE
+          value: "werwerTrip"
+          - name: MYSQL_USER
+          value: "root"
+          - name: MYSQL_PASSWORD
+          value: "werwerTrip1234"
         ports:
         - containerPort: 3306
