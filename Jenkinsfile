@@ -7,9 +7,13 @@ pipeline {
                 echo '拉取成功'
             }
         }
-        stage('构建运行数据库镜像'){
-            steps{
-                // 查找并停止旧的容器
+        stage('删除旧容器'){
+            //删除已有deployment和serve
+            bat'''
+                kubectl delete -f k8s/db-deployment.yaml
+                kubectl delete -f k8s/db-service.yaml
+            '''
+            // 查找并停止旧的容器
                 powershell '''
                 $containers = docker ps -q --filter "ancestor=qiuer0121/db:latest"
                 foreach ($container in $containers) {
@@ -24,13 +28,15 @@ pipeline {
                 }
                 '''
                 bat 'docker rmi -f qiuer0121/db:latest || true'
-                // 构建前端 Docker 镜像
+        }
+        stage('构建新容器'){
+            steps{
                 bat 'docker build -t qiuer0121/db ./db'
                 echo '构建成功'
             }
         }
 
-        stage('Push Docker Image') {
+        stage('推送远程镜像') {
             steps {
                 script {
                         bat '''
@@ -41,12 +47,10 @@ pipeline {
             }
         }
         
-        stage('部署到k8s'){
+        stage('重新部署到k8s'){
             steps{
                 bat '''
-                kubectl delete -f k8s/db-deployment.yaml
                 kubectl apply -f k8s/db-deployment.yaml
-                kubectl delete -f k8s/db-service.yaml
                 kubectl apply -f k8s/db-service.yaml
                 '''
                 echo '部署成功'
