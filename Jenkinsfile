@@ -25,7 +25,7 @@ pipeline {
                 '''
                 bat 'docker rmi -f qiuer0121/db:latest'
                 // 构建前端 Docker 镜像
-                bat 'docker build -t qiuer0121/db -f Dockerfile ./db'
+                bat 'docker build -t qiuer0121/db ./db'
                 echo '构建成功'
             }
         }
