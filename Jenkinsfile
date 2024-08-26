@@ -8,6 +8,7 @@ pipeline {
             }
         }
         stage('删除旧容器'){
+            steps{
             //删除已有deployment和serve
             bat'''
                 kubectl delete -f k8s/db-deployment.yaml
@@ -28,6 +29,7 @@ pipeline {
                 }
                 '''
                 bat 'docker rmi -f qiuer0121/db:latest || true'
+            }
         }
         stage('构建新容器'){
             steps{
