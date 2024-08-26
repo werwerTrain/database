@@ -46,6 +46,7 @@ pipeline {
                 bat '''
                 kubectl delete -f k8s/db-deployment.yaml
                 kubectl apply -f k8s/db-deployment.yaml
+                kubectl delete -f k8s/db-service.yaml
                 kubectl apply -f k8s/db-service.yaml
                 '''
                 echo '部署成功'
