@@ -56,6 +56,7 @@ pipeline {
         stage('Service to Kubernetes') {
             steps {
                 script {
+                    sh 'kubectl delete -f k8s/db-service.yaml'
                     // 应用 Kubernetes 配置
                     sh 'kubectl apply -f k8s/db-service.yaml'
                 }
