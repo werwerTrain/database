@@ -42,11 +42,25 @@ pipeline {
                 }
             }
         }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    // 使用凭证登录 Docker 镜像仓库
+                    withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh '''
+                        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+                        docker push ${DB_IMAGE}
+                        '''
+                    }
+                }
+            }
+        }
         
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    //sh 'kubectl delete -f k8s/db-deployment.yaml'
+                    sh 'kubectl delete -f k8s/db-deployment.yaml'
                     // 应用 Kubernetes 配置
                     sh 'kubectl apply -f k8s/db-deployment.yaml'
                 }
@@ -56,7 +70,7 @@ pipeline {
         stage('Service to Kubernetes') {
             steps {
                 script {
-                    //sh 'kubectl delete -f k8s/db-service.yaml'
+                    sh 'kubectl delete -f k8s/db-service.yaml'
                     // 应用 Kubernetes 配置
                     sh 'kubectl apply -f k8s/db-service.yaml'
                 }
