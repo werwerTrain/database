@@ -1,39 +1,56 @@
 pipeline {
     agent any
-
-    environment {
-        // 设置 Docker 镜像的标签
-        DB_IMAGE = "luluplum/db:latest"
-    }
-
     stages {
-        stage('Build DB') {
+        stage('拉取数据库') {
             steps {
-                script {
-                    // 构建数据库 Docker 镜像
-                    bat 'docker build -t luluplum/db:latest ./db'
+                git branch: 'sxq', url: 'https://github.com/werwerTrain/database.git'
+                echo '拉取成功'
+            }
+        }
+        stage('构建运行数据库镜像'){
+            steps{
+                // 查找并停止旧的容器
+                powershell '''
+                $containers = docker ps -q --filter "ancestor=qiuer0121/db:latest"
+                foreach ($container in $containers) {
+                    Write-Output "Stopping container $container"
+                    docker stop $container
                 }
+
+                $allContainers = docker ps -a -q --filter "ancestor=qiuer0121/db:latest"
+                foreach ($container in $allContainers) {
+                    Write-Output "Removing container $container"
+                    docker rm $container
+                }
+                '''
+                bat 'docker rmi -f qiuer0121/db:latest'
+                // 构建前端 Docker 镜像
+                bat 'docker build -t qiuer0121/db -f dockerfile .'
+                echo '构建成功'
             }
         }
 
-        stage('Deploy to Kubernetes') {
+        stage('Push Docker Image') {
             steps {
                 script {
-                    // 应用 Kubernetes 配置
-                    bat 'kubectl apply -f k8s/db-deployment.yaml'
+                        bat '''
+                        echo 20050121Rabbit| docker login -u qiuer0121 --password-stdin
+                        docker push qiuer0121/db:latest
+                        '''
                 }
             }
         }
-
-        stage('Service to Kubernetes') {
-            steps {
-                script {
-                    // 应用 Kubernetes 配置
-                    bat 'kubectl apply -f k8s/db-service.yaml'
-                }
+        
+        stage('部署到k8s'){
+            steps{
+                bat '''
+                kubectl delete -f k8s/db-deployment.yaml
+                kubectl apply -f k8s/db-deployment.yaml
+                kubectl apply -f k8s/db-service.yaml
+                '''
+                echo '部署成功'
             }
         }
-
     }
 
     post {
