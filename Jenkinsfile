@@ -10,30 +10,30 @@ pipeline {
         stage('删除旧容器'){
             steps{
             //删除已有deployment和serve
-            bat'''
-                kubectl delete -f k8s/db-deployment.yaml
-                kubectl delete -f k8s/db-service.yaml
-            '''
+            // bat'''
+            //     kubectl delete -f k8s/db-deployment.yaml
+            //     kubectl delete -f k8s/db-service.yaml
+            // '''
             // 查找并停止旧的容器
                 powershell '''
-                $containers = docker ps -q --filter "ancestor=bxr/db:latest"
+                $containers = docker ps -q --filter "ancestor=bxr0820/db:latest"
                 foreach ($container in $containers) {
                     Write-Output "Stopping container $container"
                     docker stop $container
                 }
 
-                $allContainers = docker ps -a -q --filter "ancestor=bxr/db:latest"
+                $allContainers = docker ps -a -q --filter "ancestor=bxr0820/db:latest"
                 foreach ($container in $allContainers) {
                     Write-Output "Removing container $container"
                     docker rm $container
                 }
                 '''
-                bat 'docker rmi -f bxr/db:latest || true'
+                bat 'docker rmi -f bxr0820/db:latest || true'
             }
         }
         stage('构建新容器'){
             steps{
-                bat 'docker build -t bxr/db ./db'
+                bat 'docker build -t bxr0820/db ./db'
                 echo '构建成功'
             }
         }
@@ -43,7 +43,7 @@ pipeline {
                 script {
                         bat '''
                         echo buxinran123| docker login -u bxr0820 --password-stdin
-                        docker push bxr/db:latest
+                        docker push bxr0820/db:latest
                         '''
                 }
             }
