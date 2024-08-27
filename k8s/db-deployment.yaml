@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: db
-        image: bxr/db:latest
+        image: bxr0820/db:latest
         env:
           - name: MYSQL_ROOT_PASSWORD
             value: "werwerTrip1234"
