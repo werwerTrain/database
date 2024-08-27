@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('拉取数据库') {
             steps {
-                git branch: 'sxq', url: 'https://github.com/werwerTrain/database.git'
+                git branch: 'bxr_new', url: 'https://github.com/werwerTrain/database.git'
                 echo '拉取成功'
             }
         }
@@ -16,24 +16,24 @@ pipeline {
             '''
             // 查找并停止旧的容器
                 powershell '''
-                $containers = docker ps -q --filter "ancestor=qiuer0121/db:latest"
+                $containers = docker ps -q --filter "ancestor=bxr/db:latest"
                 foreach ($container in $containers) {
                     Write-Output "Stopping container $container"
                     docker stop $container
                 }
 
-                $allContainers = docker ps -a -q --filter "ancestor=qiuer0121/db:latest"
+                $allContainers = docker ps -a -q --filter "ancestor=bxr/db:latest"
                 foreach ($container in $allContainers) {
                     Write-Output "Removing container $container"
                     docker rm $container
                 }
                 '''
-                bat 'docker rmi -f qiuer0121/db:latest || true'
+                bat 'docker rmi -f bxr/db:latest || true'
             }
         }
         stage('构建新容器'){
             steps{
-                bat 'docker build -t qiuer0121/db ./db'
+                bat 'docker build -t bxr/db ./db'
                 echo '构建成功'
             }
         }
@@ -42,8 +42,8 @@ pipeline {
             steps {
                 script {
                         bat '''
-                        echo 20050121Rabbit| docker login -u qiuer0121 --password-stdin
-                        docker push qiuer0121/db:latest
+                        echo buxinran123| docker login -u bxr0820 --password-stdin
+                        docker push bxr/db:latest
                         '''
                 }
             }
